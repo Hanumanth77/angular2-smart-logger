@@ -29,7 +29,7 @@ export class Module {
        this.logger.debug(`Debug message`);
        
        // or
-       this.logger.debug((environmentLogger:ILoggerCallback) => {
+       this.logger.debug((environmentLogger:IEnvironmentLogger) => {
            environmentLogger.write(1, 2, 3);
        });
     }
