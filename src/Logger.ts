@@ -4,21 +4,17 @@ import {isFunction} from '@angular/common/src/facade/lang';
 
 import {ILogger} from './ILogger';
 import {ILoggerConfig} from './ILoggerConfig';
+import {IEnvironmentLogger} from './IEnvironmentLogger';
 import {LoggerPayload} from './ILogger';
 import {ILoggerCallback} from './ILoggerCallback';
-
-import {ERROR_LEVEL} from './ILoggerLevel';
-import {WARN_LEVEL} from './ILoggerLevel';
-import {NOTICE_LEVEL} from './ILoggerLevel';
-import {INFO_LEVEL} from './ILoggerLevel';
-import {DEBUG_LEVEL} from './ILoggerLevel';
+import {LoggerLevelEnum} from './LoggerLevelEnum';
 
 const CONSOLE_FN_DICTIONARY = {
-    [DEBUG_LEVEL]: 'debug',
-    [INFO_LEVEL]: 'info',
-    [NOTICE_LEVEL]: 'log',
-    [WARN_LEVEL]: 'warn',
-    [ERROR_LEVEL]: 'error'
+    [LoggerLevelEnum.DEBUG_LEVEL]: 'debug',
+    [LoggerLevelEnum.INFO_LEVEL]: 'info',
+    [LoggerLevelEnum.NOTICE_LEVEL]: 'log',
+    [LoggerLevelEnum.WARN_LEVEL]: 'warn',
+    [LoggerLevelEnum.ERROR_LEVEL]: 'error'
 };
 
 /**
@@ -57,32 +53,32 @@ export class Logger implements ILogger {
     }
 
     public debug(payload:LoggerPayload) {
-        this.write(DEBUG_LEVEL, this.loggerConfig.debugLevelPath, payload);
+        this.write(LoggerLevelEnum.DEBUG_LEVEL, this.loggerConfig.debugLevelClassesRegexp, payload);
     }
 
     public info(payload:LoggerPayload) {
-        this.write(INFO_LEVEL, this.loggerConfig.debugLevelPath, payload);
+        this.write(LoggerLevelEnum.INFO_LEVEL, this.loggerConfig.debugLevelClassesRegexp, payload);
     }
 
     public log(payload:LoggerPayload) {
-        this.write(NOTICE_LEVEL, this.loggerConfig.logLevelPath, payload);
+        this.write(LoggerLevelEnum.NOTICE_LEVEL, this.loggerConfig.logLevelClassesRegexp, payload);
     }
 
     public warn(payload:LoggerPayload) {
-        this.write(NOTICE_LEVEL, this.loggerConfig.logLevelPath, payload);
+        this.write(LoggerLevelEnum.NOTICE_LEVEL, this.loggerConfig.logLevelClassesRegexp, payload);
     }
 
     public error(payload:LoggerPayload) {
-        this.write(ERROR_LEVEL, this.loggerConfig.errorLevelPath, payload);
+        this.write(LoggerLevelEnum.ERROR_LEVEL, this.loggerConfig.errorLevelClassesRegexp, payload);
     }
 
-    private write(level:number, levelPath:string, payload:LoggerPayload) {
+    private write(level:number, classesRegexp:string, payload:LoggerPayload) {
         if (level > this.loggerConfig.logLevel) {
             return;
         }
 
-        const loggedClassPath:string = this.getPath();
-        if (loggedClassPath && !new RegExp(levelPath).test(loggedClassPath)) {
+        const loggedClassName:string = this.getLoggedClassName();
+        if (loggedClassName && !new RegExp(classesRegexp).test(loggedClassName)) {
             return;
         }
 
@@ -99,7 +95,7 @@ export class Logger implements ILogger {
         }
     }
 
-    private getPath():string {
+    private getLoggedClassName():string {
         return this.loggedClass ? this.loggedClass.name : null;
     }
 }

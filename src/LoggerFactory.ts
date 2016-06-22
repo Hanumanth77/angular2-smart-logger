@@ -5,11 +5,7 @@ import {isPresent} from '@angular/common/src/facade/lang';
 import {ILogger} from './ILogger';
 import {Logger} from './Logger';
 import {ILoggerConfig} from './ILoggerConfig';
-import {DEBUG_LEVEL} from './ILoggerLevel';
-import {INFO_LEVEL} from './ILoggerLevel';
-import {NOTICE_LEVEL} from './ILoggerLevel';
-import {WARN_LEVEL} from './ILoggerLevel';
-import {ERROR_LEVEL} from './ILoggerLevel';
+import {LoggerLevelEnum} from './LoggerLevelEnum';
 
 const LOG_CONFIG_STORE_PARAMETER:string = "__logConfig",
     GLOBAL_LOGGER_FACTORY_PARAMETER:string = '$$LoggerFactory';
@@ -25,7 +21,7 @@ const consoleDebugFn = console.debug,
 export class LoggerFactory {
 
     private static config:ILoggerConfig = {
-        logLevel: DEBUG_LEVEL
+        logLevel: LoggerLevelEnum.DEBUG_LEVEL
     };
 
     public static makeLogger(clazz?:Type):ILogger {
@@ -89,19 +85,19 @@ export class LoggerFactory {
                     console.warn =
                         console.error = consoleStubFn;
 
-        if (this.config.logLevel >= ERROR_LEVEL) {
+        if (this.config.logLevel >= LoggerLevelEnum.ERROR_LEVEL) {
             console.error = consoleErrorFn;
         }
-        if (this.config.logLevel >= WARN_LEVEL) {
+        if (this.config.logLevel >= LoggerLevelEnum.WARN_LEVEL) {
             console.warn = consoleWarnFn;
         }
-        if (this.config.logLevel >= NOTICE_LEVEL) {
+        if (this.config.logLevel >= LoggerLevelEnum.NOTICE_LEVEL) {
             console.log = consoleNoticeFn;
         }
-        if (this.config.logLevel >= INFO_LEVEL) {
+        if (this.config.logLevel >= LoggerLevelEnum.INFO_LEVEL) {
             console.info = consoleInfoFn;
         }
-        if (this.config.logLevel >= DEBUG_LEVEL) {
+        if (this.config.logLevel >= LoggerLevelEnum.DEBUG_LEVEL) {
             console.debug = consoleDebugFn;
         }
     }

@@ -39,9 +39,11 @@ export class Module {
 **config.json**
 ```json
 {
-  "logLevelPath": "[0-9]+",
-  "errorLevelPath": ".",
-  "debugLevelPath": "Module",
+  "debugLevelClassesRegexp": "[0-9]+",
+  "infoLevelClassesRegexp": ".",
+  "logLevelClassesRegexp": ".",
+  "warnLevelClassesRegexp": ".",
+  "errorLevelClassesRegexp": "Module",
   "logLevel": 5
 }
 ```

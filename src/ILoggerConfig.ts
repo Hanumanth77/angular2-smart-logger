@@ -1,10 +1,10 @@
 export interface ILoggerConfig {
 
-    debugLevelPath?:string;
-    infoLevelPath?:string;
-    logLevelPath?:string;
-    warnLevelPath?:string;
-    errorLevelPath?:string;
+    debugLevelClassesRegexp?:string;
+    infoLevelClassesRegexp?:string;
+    logLevelClassesRegexp?:string;
+    warnLevelClassesRegexp?:string;
+    errorLevelClassesRegexp?:string;
 
     /**
      * https://tools.ietf.org/html/rfc5424
