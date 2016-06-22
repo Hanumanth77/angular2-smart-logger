@@ -1,4 +1,4 @@
-# LoggerFactory
+# angular2-smart-logger
 
 The implementation of logger for Angular2.
 

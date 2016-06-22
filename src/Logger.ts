@@ -4,9 +4,9 @@ import {isFunction} from '@angular/common/src/facade/lang';
 
 import {ILogger} from './ILogger';
 import {ILoggerConfig} from './ILoggerConfig';
-import {IEnvironmentLogger} from './IEnviromventlogger';
 import {LoggerPayload} from './ILogger';
 import {ILoggerCallback} from './ILoggerCallback';
+
 import {ERROR_LEVEL} from './ILoggerLevel';
 import {WARN_LEVEL} from './ILoggerLevel';
 import {NOTICE_LEVEL} from './ILoggerLevel';
