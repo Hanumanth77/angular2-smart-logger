@@ -17,34 +17,43 @@ npm install angular2-smart-logger --save
 import {LoggerFactory} from 'angular2-smart-logger';
 
 LoggerFactory.configure(require('./config/log/default.json')); // Optional call
+// or
+LoggerFactory.configure(require('./config/log/ProductionLoggerConfig').ProductionLoggerConfig);
 ```
 
-**Module.ts**
+**LoggedFirstClass.ts**
 ```typescript
-export class Module {
+class LoggedFirstClass {
+   private logger:ILogger = LoggerFactory.makeLogger(LoggedFirstClass);
 
-    private logger:ILogger = LoggerFactory.makeLogger(Module);
-    
-    log() {
-       this.logger.debug(`Debug message`);
-       
-       // or
-       this.logger.debug((environmentLogger:IEnvironmentLogger) => {
-           environmentLogger.write(1, 2, 3);
+   public logAtFirstClass() {
+       this.logger.info(new Error("!"));
+       this.logger.warn(new Error("!"));
+                       
+       this.logger.debug((logger:IEnvironmentLogger) => {
+           // Here may be different kinds of complex calculations, performed only in logging mode
+           const i = 100 + 200;
+           logger.write(300, i);    // <=> console.debug(300, 300);
        });
-    }
+
+       this.logger.error((logger:IEnvironmentLogger) => {
+           // Here may be different kinds of complex calculations, performed only in logging mode
+           const i = 400 + 500;
+           logger.write(600, i);    // <=> console.error(300, 300);
+       });
+   }
 }
 ```
 
 **config.json**
 ```json
 {
-  "debugLevelClassesRegexp": "[0-9]+",
-  "infoLevelClassesRegexp": ".",
-  "logLevelClassesRegexp": ".",
-  "warnLevelClassesRegexp": ".",
-  "errorLevelClassesRegexp": "Module",
-  "logLevel": 5
+    "debugLevelPath": "[0-9]+",
+    "infoLevelPath": ".",
+    "logLevelPath": ".",
+    "warnLevelPath": ".",
+    "errorLevelPath": "[^LoggedFirstClass]",
+    "logLevel": 3
 }
 ```
 
