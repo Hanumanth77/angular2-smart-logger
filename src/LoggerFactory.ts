@@ -1,6 +1,6 @@
 import {Type} from '@angular/core';
 
-import {isPresent} from '@angular/common/src/facade/lang';
+import {isPresent, isType} from '@angular/common/src/facade/lang';
 
 import {ILogger} from './ILogger';
 import {Logger} from './Logger';
@@ -10,31 +10,33 @@ import {LoggerLevelEnum} from './LoggerLevelEnum';
 const LOG_CONFIG_STORE_PARAMETER:string = "__logConfig",
     GLOBAL_LOGGER_FACTORY_PARAMETER:string = '$$LoggerFactory';
 
-const consoleDebugFn = console.debug,
-    consoleInfoFn = console.info,
-    consoleNoticeFn = console.log,
-    consoleWarnFn = console.warn,
-    consoleErrorFn = console.error,
-    consoleStubFn = function () {
+export const CONSOLE_DEBUG_FN = console.debug,
+    CONSOLE_INFO_FN = console.info,
+    CONSOLE_NOTICE_FN = console.log,
+    CONSOLE_WARN_FN = console.warn,
+    CONSOLE_ERROR_FN = console.error,
+    CONSOLE_EMPTY_FN = function () {
     };
 
 export class LoggerFactory {
 
-    private static config:ILoggerConfig = {
+    private static initialConfig:ILoggerConfig = Object.freeze({
         logLevel: LoggerLevelEnum.DEBUG_LEVEL
-    };
+    });
 
-    public static makeLogger(clazz?:Type):ILogger {
-        return new Logger(LoggerFactory.config).setLoggedClass(clazz);
+    private static config:ILoggerConfig = Object.assign({}, LoggerFactory.initialConfig);
+
+    public static makeLogger(loggedClass?:string|Type):ILogger {
+        return new Logger(this.config).setLoggedClass(loggedClass);
     }
 
     /**
-     * Optional call. It may be caused by, maybe not
+     * Optional call. It may be caused by, or maybe not
      *
      * @param outerConfig ILoggerConfig
      */
-    public static configure(outerConfig?:ILoggerConfig) {
-        const loggerConfig:ILoggerConfig = this.tryGetFromStorage();
+    public static configure(outerConfig?:{new ():ILoggerConfig}|ILoggerConfig) {
+        const storedLoggerConfig:ILoggerConfig = this.tryGetFromStorage();
 
         // Formation of configuration based on the priority:
         //
@@ -42,11 +44,13 @@ export class LoggerFactory {
         // The second priority: the config from outer file
         // The third priority: the local config at current class
 
-        LoggerFactory.config = Object.assign(
-            Object.assign(LoggerFactory.config, outerConfig),
-            loggerConfig
+        this.config = Object.assign(
+            Object.assign(
+                Object.assign({}, LoggerFactory.initialConfig),
+                isType(outerConfig) ? new (outerConfig as {new ():ILoggerConfig})() : outerConfig
+            ),
+            storedLoggerConfig
         );
-
         this.refreshEnvLoggersFunctions();
     }
 
@@ -55,7 +59,7 @@ export class LoggerFactory {
      *
      * @param logLevel The level of logging
      */
-    public static configureLogLevel(logLevel:number) {
+    public static configureLogLevel(logLevel:LoggerLevelEnum) {
         this.config.logLevel = logLevel;
 
         this.refreshEnvLoggersFunctions();
@@ -83,22 +87,22 @@ export class LoggerFactory {
             console.info =
                 console.log =
                     console.warn =
-                        console.error = consoleStubFn;
+                        console.error = CONSOLE_EMPTY_FN;
 
         if (this.config.logLevel >= LoggerLevelEnum.ERROR_LEVEL) {
-            console.error = consoleErrorFn;
+            console.error = CONSOLE_ERROR_FN;
         }
         if (this.config.logLevel >= LoggerLevelEnum.WARN_LEVEL) {
-            console.warn = consoleWarnFn;
+            console.warn = CONSOLE_WARN_FN;
         }
         if (this.config.logLevel >= LoggerLevelEnum.NOTICE_LEVEL) {
-            console.log = consoleNoticeFn;
+            console.log = CONSOLE_NOTICE_FN;
         }
         if (this.config.logLevel >= LoggerLevelEnum.INFO_LEVEL) {
-            console.info = consoleInfoFn;
+            console.info = CONSOLE_INFO_FN;
         }
         if (this.config.logLevel >= LoggerLevelEnum.DEBUG_LEVEL) {
-            console.debug = consoleDebugFn;
+            console.debug = CONSOLE_DEBUG_FN;
         }
     }
 }

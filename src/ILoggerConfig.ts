@@ -1,10 +1,12 @@
+import {LoggerLevelEnum} from './LoggerLevelEnum';
+
 export interface ILoggerConfig {
 
-    debugLevelClassesRegexp?:string;
-    infoLevelClassesRegexp?:string;
-    logLevelClassesRegexp?:string;
-    warnLevelClassesRegexp?:string;
-    errorLevelClassesRegexp?:string;
+    debugLevelPath?:string;
+    infoLevelPath?:string;
+    logLevelPath?:string;
+    warnLevelPath?:string;
+    errorLevelPath?:string;
 
     /**
      * https://tools.ietf.org/html/rfc5424
@@ -18,5 +20,5 @@ export interface ILoggerConfig {
      * 6  Informational: informational messages
      * 7  Debug: debug-level messages
      */
-    logLevel: number;
+    logLevel: LoggerLevelEnum;
 }
