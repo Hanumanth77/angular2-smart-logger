@@ -102,7 +102,7 @@ export class LoggerFactory {
             console.info = CONSOLE_INFO_FN;
         }
         if (this.config.logLevel >= LoggerLevelEnum.DEBUG_LEVEL) {
-            console.debug = CONSOLE_DEBUG_FN;
+            console.debug = CONSOLE_DEBUG_FN || CONSOLE_INFO_FN;    // IE10 workaround
         }
     }
 }
