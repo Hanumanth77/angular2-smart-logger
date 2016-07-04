@@ -26,25 +26,30 @@ const CONSOLE_FN_DICTIONARY = {
  * as a static field.
  *
  * @example:
- *   class A {
- *      private logger:ILogger = LoggerFactory.makeLogger(A);
  *
- *      methodA() {
- *          // Logging the simple object
- *          this.logger.debug(`Test`, `Test2`, 100500);
+ * class LoggedFirstClass {
  *
- *          // Logging the "payload" object - to perform the callback
- *          this.logger.debug((logger:IEnvironmentLogger) => {
+ *  private logger:ILogger = LoggerFactory.makeLogger(LoggedFirstClass);
  *
- *              // Here may be different kinds of complex calculations, performed only in logging mode
- *              const i = 100 + 200;
- *              logger.write(200, i);                       // <=> console.debug(200, 300);
- *          });
+ *  public logAtFirstClass() {
+ *       this.logger.info(1);                                    // <=> console.info(1);
+ *       this.logger.warn(() => 2);                              // <=> console.warn(2);
+ *       this.logger.error(new Error("3"));                      // <=> console.error(new Error("3"));
  *
- *          // Logging the simple object as return value
- *          this.logger.debug(() => [1, 2, 3].length);      // <=> console.debug([1, 2, 3].length);
- *      }
+ *       this.logger.info(1, 2, 3);                              // <=> console.info(1, 2, 3);
+ *       this.logger.warn(() => [1, 2, 3]);                      // <=> console.warn([1, 2, 3]);
+ *       this.logger.error("Custom error:", new Error("2"));     // <=> console.error("Custom error:", new Error("2"));
+ *       this.logger.debug((logger:IEnvironmentLogger) => {
+ *           // Here may be different kinds of complex calculations, performed only in logging mode
+ *           logger.write('Debug log mode enabled: ', 1, 2, 3);  // <=> console.debug('Debug log mode enabled: ', 1, 2, 3);
+ *       });
+ *       this.logger.warn((logger:IEnvironmentLogger) => {
+ *           // Here may be different kinds of complex calculations, performed only in logging mode
+ *           logger.write('Warn log mode enabled: ', 1, 2, 3);   // <=> console.warn('Warn log mode enabled: ', 1, 2, 3);
+ *           return [1, 2, 3].length;                            // <=> console.warn([1, 2, 3].length);
+ *       });
  *   }
+ *}
  */
 export class Logger implements ILogger {
 

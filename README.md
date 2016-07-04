@@ -27,19 +27,21 @@ class LoggedFirstClass {
    private logger:ILogger = LoggerFactory.makeLogger(LoggedFirstClass);
 
    public logAtFirstClass() {
-       this.logger.info(new Error("!"));
-       this.logger.warn(new Error("!"));
-                       
+       this.logger.info(1);                                    // <=> console.info(1);
+       this.logger.warn(() => 2);                              // <=> console.warn(2);
+       this.logger.error(new Error("3"));                      // <=> console.error(new Error("3"));
+
+       this.logger.info(1, 2, 3);                              // <=> console.info(1, 2, 3);
+       this.logger.warn(() => [1, 2, 3]);                      // <=> console.warn([1, 2, 3]);
+       this.logger.error("Custom error:", new Error("2"));     // <=> console.error("Custom error:", new Error("2"));
        this.logger.debug((logger:IEnvironmentLogger) => {
            // Here may be different kinds of complex calculations, performed only in logging mode
-           const i = 100 + 200;
-           logger.write(300, i);    // <=> console.debug(300, 300);
+           logger.write('Debug log mode enabled: ', 1, 2, 3);  // <=> console.debug('Debug log mode enabled: ', 1, 2, 3);
        });
-
-       this.logger.error((logger:IEnvironmentLogger) => {
+       this.logger.warn((logger:IEnvironmentLogger) => {
            // Here may be different kinds of complex calculations, performed only in logging mode
-           const i = 400 + 500;
-           logger.write(600, i);    // <=> console.error(300, 300);
+           logger.write('Warn log mode enabled: ', 1, 2, 3);   // <=> console.warn('Warn log mode enabled: ', 1, 2, 3);
+           return [1, 2, 3].length;                            // <=> console.warn([1, 2, 3].length);
        });
    }
 }
