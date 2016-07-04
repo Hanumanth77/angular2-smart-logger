@@ -8,13 +8,13 @@ export interface ILogger {
 
     setLoggedClass(loggedClass:Type):ILogger;
 
-    debug(payload:LoggerPayload);
+    debug(...payloads:LoggerPayload[]);
 
-    info(payload:LoggerPayload);
+    info(...payloads:LoggerPayload[]);
 
-    log(payload:LoggerPayload);
+    log(...payloads:LoggerPayload[]);
 
-    warn(payload:LoggerPayload);
+    warn(...payloads:LoggerPayload[]);
 
-    error(payload:LoggerPayload);
+    error(...payloads:LoggerPayload[]);
 }

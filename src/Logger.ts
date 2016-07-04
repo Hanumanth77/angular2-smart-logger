@@ -3,7 +3,8 @@ import {Type} from '@angular/core';
 import {
     isFunction,
     isPresent,
-    isString
+    isString,
+    isArray
 } from '@angular/common/src/facade/lang';
 
 import {ILogger} from './ILogger';
@@ -30,15 +31,18 @@ const CONSOLE_FN_DICTIONARY = {
  *
  *      methodA() {
  *          // Logging the simple object
- *          this.logger.debug(`Test`);
+ *          this.logger.debug(`Test`, `Test2`, 100500);
  *
  *          // Logging the "payload" object - to perform the callback
  *          this.logger.debug((logger:IEnvironmentLogger) => {
  *
  *              // Here may be different kinds of complex calculations, performed only in logging mode
  *              const i = 100 + 200;
- *              logger.write(200, i);       // <=> console.debug(200, 300);
+ *              logger.write(200, i);                       // <=> console.debug(200, 300);
  *          });
+ *
+ *          // Logging the simple object as return value
+ *          this.logger.debug(() => [1, 2, 3].length);      // <=> console.debug([1, 2, 3].length);
  *      }
  *   }
  */
@@ -66,34 +70,34 @@ export class Logger implements ILogger {
         return this;
     }
 
-    public debug(payload:LoggerPayload) {
-        this.write(LoggerLevelEnum.DEBUG_LEVEL, payload, this.loggerConfig.debugLevelPath);
+    public debug(...payloads:LoggerPayload[]) {
+        this.write(LoggerLevelEnum.DEBUG_LEVEL, this.loggerConfig.debugLevelPath, payloads);
     }
 
-    public info(payload:LoggerPayload) {
-        this.write(LoggerLevelEnum.INFO_LEVEL, payload, this.loggerConfig.infoLevelPath);
+    public info(...payloads:LoggerPayload[]) {
+        this.write(LoggerLevelEnum.INFO_LEVEL, this.loggerConfig.infoLevelPath, payloads);
     }
 
-    public log(payload:LoggerPayload) {
-        this.write(LoggerLevelEnum.NOTICE_LEVEL, payload, this.loggerConfig.logLevelPath);
+    public log(...payloads:LoggerPayload[]) {
+        this.write(LoggerLevelEnum.NOTICE_LEVEL, this.loggerConfig.logLevelPath, payloads);
     }
 
-    public warn(payload:LoggerPayload) {
-        this.write(LoggerLevelEnum.WARN_LEVEL, payload, this.loggerConfig.warnLevelPath);
+    public warn(...payloads:LoggerPayload[]) {
+        this.write(LoggerLevelEnum.WARN_LEVEL, this.loggerConfig.warnLevelPath, payloads);
     }
 
-    public error(payload:LoggerPayload) {
-        this.write(LoggerLevelEnum.ERROR_LEVEL, payload, this.loggerConfig.errorLevelPath);
+    public error(...payloads:LoggerPayload[]) {
+        this.write(LoggerLevelEnum.ERROR_LEVEL, this.loggerConfig.errorLevelPath, payloads);
     }
 
     /**
      * Write the message into an output stream or perform payload if it is presented as a callback function.
      *
      * @param logLevel The log level
-     * @param payload The payload for logging (message or callback for execution)
      * @param configuredLevelPath The regular expression for filtering payloads by their belonging to a specific class
+     * @param payloads The payload for logging (message or callback for execution)
      */
-    private write(logLevel:LoggerLevelEnum, payload:LoggerPayload, configuredLevelPath?:string) {
+    private write(logLevel:LoggerLevelEnum, configuredLevelPath:string, ...payloads:LoggerPayload[]) {
         if (logLevel > this.loggerConfig.logLevel) {
             return;
         }
@@ -107,15 +111,24 @@ export class Logger implements ILogger {
 
         const consoleFn:Type = console[CONSOLE_FN_DICTIONARY[logLevel]];
 
-        if (isFunction(payload)) {
-            (payload as ILoggerCallback)({
-                write(...parameters) {
-                    consoleFn.apply(console, parameters);
+        payloads.forEach((payload:LoggerPayload) => {
+            if (isArray(payload)) {
+                if ((payload as []).length && isFunction(payload[0])) {
+                    const returnsPayload = (payload[0] as ILoggerCallback)({
+                        write(...parameters) {
+                            consoleFn.apply(console, parameters);
+                        }
+                    });
+                    if (isPresent(returnsPayload)) {
+                        consoleFn.call(console, returnsPayload);
+                    }
+                } else {
+                    consoleFn.apply(console, payload);
                 }
-            });
-        } else {
-            consoleFn.call(console, payload);
-        }
+            } else {
+                consoleFn.call(console, payload);
+            }
+        });
     }
 
     private getLoggedClassName():string {
