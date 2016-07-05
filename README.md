@@ -61,7 +61,7 @@ class LoggedFirstClass {
 }
 ```
 
-**Configure the runtime*
+**Configure the runtime**
 ```typescript
 $$LoggerFactory.storeConfig({"errorLevelPath": "[^Main]", "logLevel": 3})
 ```
