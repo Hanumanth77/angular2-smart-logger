@@ -13,10 +13,12 @@ npm install angular2-smart-logger --save
 
 **main.ts**
 ```typescript
-// Configure the logger before loading all the internal classes
+// Configure the logger before loading the all internal classes
 import {LoggerFactory} from 'angular2-smart-logger';
 
-LoggerFactory.configure(require('./config/log/default.json')); // Optional call
+LoggerFactory.configure();
+// or
+LoggerFactory.configure(require('./config/log/default.json'));
 // or
 LoggerFactory.configure(require('./config/log/ProductionLoggerConfig').ProductionLoggerConfig);
 ```
@@ -58,6 +60,13 @@ class LoggedFirstClass {
     "logLevel": 3
 }
 ```
+
+**Configure the runtime*
+```typescript
+$$LoggerFactory.storeConfig({"errorLevelPath": "[^Main]", "logLevel": 3})
+```
+   
+![Configure the runtime](demo/configure.png)
 
 ## License
 
