@@ -1,6 +1,10 @@
 import {Type} from '@angular/core';
 
-import {isPresent, isType} from '@angular/common/src/facade/lang';
+import {
+    isPresent,
+    isType,
+    noop
+} from '@angular/common/src/facade/lang';
 
 import {ILogger} from './ILogger';
 import {Logger} from './Logger';
@@ -10,28 +14,22 @@ import {LoggerLevelEnum} from './LoggerLevelEnum';
 const LOG_CONFIG_STORE_PARAMETER:string = "__logConfig",
     GLOBAL_LOGGER_FACTORY_PARAMETER:string = '$$LoggerFactory';
 
-export const CONSOLE_DEBUG_FN = console.debug,
-    CONSOLE_INFO_FN = console.info,
-    CONSOLE_NOTICE_FN = console.log,
-    CONSOLE_WARN_FN = console.warn,
-    CONSOLE_ERROR_FN = console.error,
-    CONSOLE_EMPTY_FN = function () {
-    };
+export const CONSOLE_DEBUG_FN = console.debug;
+export const CONSOLE_INFO_FN = console.info;
+export const CONSOLE_NOTICE_FN = console.log;
+export const CONSOLE_WARN_FN = console.warn;
+export const CONSOLE_ERROR_FN = console.error;
 
 export class LoggerFactory {
 
-    private static initialConfig:ILoggerConfig = Object.freeze({
-        logLevel: LoggerLevelEnum.DEBUG_LEVEL
-    });
-
-    private static config:ILoggerConfig = Object.assign({}, LoggerFactory.initialConfig);
+    private static config:ILoggerConfig = {logLevel: LoggerLevelEnum.DEBUG_LEVEL};
 
     public static makeLogger(loggedClass?:string|Type):ILogger {
         return new Logger(this.config).setLoggedClass(loggedClass);
     }
 
     /**
-     * Optional call. It may be caused by, or maybe not
+     * Configure the factory of the loggers. It's main method necessarily need to call the runtime.
      *
      * @param outerConfig ILoggerConfig
      */
@@ -45,10 +43,8 @@ export class LoggerFactory {
         // The third priority: the local config at current class
 
         this.config = Object.assign(
-            Object.assign(
-                Object.assign({}, LoggerFactory.initialConfig),
-                isType(outerConfig) ? new (outerConfig as {new ():ILoggerConfig})() : outerConfig
-            ),
+            {logLevel: LoggerLevelEnum.DEBUG_LEVEL},
+            isType(outerConfig) ? new (outerConfig as {new ():ILoggerConfig})() : outerConfig,
             storedLoggerConfig
         );
         this.refreshEnvLoggersFunctions();
@@ -87,7 +83,9 @@ export class LoggerFactory {
             console.info =
                 console.log =
                     console.warn =
-                        console.error = CONSOLE_EMPTY_FN;
+                        console.error = noop;
+
+        console.assert = console.assert || noop;                    // It's for safe
 
         if (this.config.logLevel >= LoggerLevelEnum.ERROR_LEVEL) {
             console.error = CONSOLE_ERROR_FN;
