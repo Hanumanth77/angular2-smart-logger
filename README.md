@@ -71,7 +71,7 @@ $$LoggerFactory.storeConfig({"errorLevelPath": "[^Main]", "logLevel": 3})
 ## Publish
 
 ```sh
-npm install & npm publish ./
+npm install & tsc & npm publish ./
 ```
 
 ## License
