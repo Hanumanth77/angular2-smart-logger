@@ -68,6 +68,12 @@ $$LoggerFactory.storeConfig({"errorLevelPath": "[^Main]", "logLevel": 3})
    
 ![Configure the runtime](demo/configure.png)
 
+## Publish
+
+```sh
+npm install & npm publish ./
+```
+
 ## License
 
 Licensed under MIT.
