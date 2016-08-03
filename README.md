@@ -65,6 +65,17 @@ class LoggedFirstClass {
 ```typescript
 $$LoggerFactory.storeConfig({"errorLevelPath": "[^Main]", "logLevel": 3})
 ```
+
+**Attention**
+Since the "LoggerFactory" may be shared between the different [dependencies](https://docs.npmjs.com/how-npm-works/npm3-dupe) 
+we must include the script "npm dedupe" in this case into the package.json:
+```json
+  ...
+  "scripts": {
+    "postinstall": "npm dedupe && ...",
+  },
+  ...
+```   
    
 ![Configure the runtime](demo/configure.png)
 
