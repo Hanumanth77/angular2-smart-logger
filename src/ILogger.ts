@@ -17,4 +17,14 @@ export interface ILogger {
     warn(...payloads:LoggerPayload[]);
 
     error(...payloads:LoggerPayload[]);
+    
+    isDebugEnabled():boolean;
+
+    isInfoEnabled():boolean;
+
+    isLogEnabled():boolean;
+
+    isWarnEnabled():boolean;
+
+    isErrorEnabled():boolean;
 }

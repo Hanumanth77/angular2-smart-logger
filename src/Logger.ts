@@ -75,24 +75,74 @@ export class Logger implements ILogger {
         return this;
     }
 
+    /**
+     * @override
+     */
     public debug(...payloads:LoggerPayload[]) {
         this.write(LoggerLevelEnum.DEBUG_LEVEL, this.loggerConfig.debugLevelPath, payloads);
     }
 
+    /**
+     * @override
+     */
     public info(...payloads:LoggerPayload[]) {
         this.write(LoggerLevelEnum.INFO_LEVEL, this.loggerConfig.infoLevelPath, payloads);
     }
 
+    /**
+     * @override
+     */
     public log(...payloads:LoggerPayload[]) {
         this.write(LoggerLevelEnum.NOTICE_LEVEL, this.loggerConfig.logLevelPath, payloads);
     }
 
+    /**
+     * @override
+     */
     public warn(...payloads:LoggerPayload[]) {
         this.write(LoggerLevelEnum.WARN_LEVEL, this.loggerConfig.warnLevelPath, payloads);
     }
 
+    /**
+     * @override
+     */
     public error(...payloads:LoggerPayload[]) {
         this.write(LoggerLevelEnum.ERROR_LEVEL, this.loggerConfig.errorLevelPath, payloads);
+    }
+
+    /**
+     * @override
+     */
+    public isDebugEnabled():boolean {
+        return this.loggerConfig.logLevel >= LoggerLevelEnum.DEBUG_LEVEL;
+    }
+
+    /**
+     * @override
+     */
+    public isInfoEnabled():boolean {
+        return this.loggerConfig.logLevel >= LoggerLevelEnum.INFO_LEVEL;
+    }
+
+    /**
+     * @override
+     */
+    public isLogEnabled():boolean {
+        return this.loggerConfig.logLevel >= LoggerLevelEnum.INFO_LEVEL;
+    }
+
+    /**
+     * @override
+     */
+    public isWarnEnabled():boolean {
+        return this.loggerConfig.logLevel >= LoggerLevelEnum.WARN_LEVEL;
+    }
+
+    /**
+     * @override
+     */
+    public isErrorEnabled():boolean {
+        return this.loggerConfig.logLevel >= LoggerLevelEnum.ERROR_LEVEL;
     }
 
     /**
