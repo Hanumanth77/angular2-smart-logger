@@ -105,4 +105,6 @@ export class LoggerFactory {
     }
 }
 
-window[GLOBAL_LOGGER_FACTORY_PARAMETER] = LoggerFactory;
+if (typeof window !== 'undefined') {
+    window[GLOBAL_LOGGER_FACTORY_PARAMETER] = LoggerFactory;
+}
