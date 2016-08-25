@@ -82,7 +82,7 @@ we must include the script "npm dedupe" in this case into the package.json:
 ## Publish
 
 ```sh
-npm install & tsc & npm publish ./
+npm run deploy
 ```
 
 ## License
