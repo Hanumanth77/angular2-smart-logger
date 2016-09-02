@@ -1,5 +1,3 @@
-import {Type} from '@angular/core';
-
 import {
     isPresent,
     isType,
@@ -24,7 +22,7 @@ export class LoggerFactory {
 
     private static config:ILoggerConfig = {logLevel: LoggerLevelEnum.DEBUG_LEVEL};
 
-    public static makeLogger(loggedClass?:string|Type):ILogger {
+    public static makeLogger(loggedClass?:string|Function):ILogger {
         return new Logger(this.config).setLoggedClass(loggedClass);
     }
 

@@ -1,6 +1,6 @@
 # angular2-smart-logger
 
-The implementation of logger for Angular2.
+The implementation of logger for Angular2 (RC6 compatible).
 
 ## Installation
 

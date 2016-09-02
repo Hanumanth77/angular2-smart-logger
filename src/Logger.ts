@@ -1,5 +1,3 @@
-import {Type} from '@angular/core';
-
 import {
     isFunction,
     isPresent,
@@ -54,7 +52,7 @@ const CONSOLE_FN_DICTIONARY = {
 export class Logger implements ILogger {
 
     private loggerConfig:ILoggerConfig;
-    private loggedClass:string|Type;
+    private loggedClass:string|Function;
 
     constructor(loggerConfig:ILoggerConfig) {
         this.loggerConfig = loggerConfig;
@@ -70,7 +68,7 @@ export class Logger implements ILogger {
      * @param loggedClass The business logic class (optional parameter)
      * @returns {Logger} The current logger
      */
-    public setLoggedClass(loggedClass?:string|Type):ILogger {
+    public setLoggedClass(loggedClass?:string|Function):ILogger {
         this.loggedClass = loggedClass;
         return this;
     }
@@ -164,7 +162,7 @@ export class Logger implements ILogger {
             return;
         }
 
-        const consoleFn:Type = console[CONSOLE_FN_DICTIONARY[logLevel]];
+        const consoleFn:Function = console[CONSOLE_FN_DICTIONARY[logLevel]];
 
         payloads.forEach((payload:LoggerPayload) => {
             if (isArray(payload)) {
@@ -190,6 +188,6 @@ export class Logger implements ILogger {
         if (!isPresent(this.loggedClass)) {
             return null;
         }
-        return isString(this.loggedClass) ? this.loggedClass as string : (this.loggedClass as Type).name;
+        return isString(this.loggedClass) ? this.loggedClass as string : (this.loggedClass as Function).name;
     }
 }
