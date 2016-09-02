@@ -166,7 +166,7 @@ export class Logger implements ILogger {
 
         payloads.forEach((payload:LoggerPayload) => {
             if (isArray(payload)) {
-                if ((payload as []).length && isFunction(payload[0])) {
+                if ((payload as Array<any>).length && isFunction(payload[0])) {
                     const returnsPayload = (payload[0] as ILoggerCallback)({
                         write(...parameters) {
                             consoleFn.apply(console, parameters);
